@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+	<meta name="robots" content="noindex">
+  <title>unamerican originals</title>
+  <style>
+    body {
+      max-width: 900px;
+      margin: 40px auto;
+      text-align: center;
+		font-family: Verdana;
+		color: white;
+    }
+
+	.playlist-container {
+  		display: inline-block;     /* allows centering as a block */
+  		text-align: left;          /* but keep internal text left-aligned */
+  		/* max-width: 600px;          /* optional, keeps things compact */
+		/* width: 670px; */
+		margin-top: 20px;
+ 		width: 70%;
+		box-sizing: border-box;
+		background: #5d9974;
+ 		 padding: 34px;
+ 		 border-radius: 12px;
+ 		 /* box-shadow: 0 2px 6px rgba(0,0,0,0.1); */
+	}	
+
+	  #player-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+	margin-top: 2px;
+  gap: 10px;
+}
+
+#player-controls button {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f8f8f8;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#player-controls button:hover {
+  background: #e8e8e8;
+}
+
+	  #now-playing {
+  flex: 1;
+  text-align: center;
+  font-style: italic;
+  color: #FFA929;
+  font-size: 0.95em;
+}
+		
+	  
+    audio {
+      width: 100%;
+      margin-top: 10px;
+		margin-bottom: 20px;
+    }
+	  
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+	  
+    li {
+      margin: 8px 0;
+      cursor: pointer;
+      color: white;
+		font-size: 1em;        /* make items easier to tap */
+    }
+	  
+    li.playing {
+      font-weight: 550;
+      color: #FFA929;
+    }
+
+	li.playing:hover {
+  		font-weight: 600;
+      	color: #FFA929;
+	}
+	  
+	li:hover {
+      	font-weight: 500;
+		color: #ffffff;
+    }
+
+	/* body font info */
+	  
+    a:link {
+            color: #FFA929; 
+        }
+	  
+	a:visited {
+            color: #FFA929; 
+        }
+	  
+	a:hover {
+            color: #FA3DB0; 
+        }
+	  
+	a:active {
+            color: #AB32B4; 
+        }
+	  
+  </style>
+</head>
+  
+<body bgcolor=#317149 leftmargin="35" topmargin="35">
+
+<h1 style="color: #ffffff; font-weight: 620;">unamerican folk originals</h1>
+
+
+<div class="playlist-container">	
+	<div id="player-controls">
+    <button id="prev">&#9664; Prev</button>
+    <div id="now-playing">Now playing: —</div>
+    <button id="next">Next &#9654;</button>
+  </div>
+	
+<audio id="player" controls></audio>
+	<ul id="playlist">
+			
+ 	<li data-src="109-VA--Dambura_Medley.mp3">1. Dambura Medley - Bābā Qerān</li>
+
+		<li data-src="Rababa solo near Agordat.mp3">2. Rababa Solo (Near Agordat, Eritrea) - Abdullah Mohammad</li>
+		
+		<li data-src="Назархуршид Али-заде - Сарви Симин.mp3">3. Сарви Симин [Sarvi Simin] - Назархуршид Али-заде [N. Ali-Zade]</li>
+
+		<li data-src="A3 Taqsim on Violine.mp3">4. Taqsim on violine - Unknown performer</li>
+
+		<li data-src="03 Zar.mp3">5. Zar - Unknown performer</li>
+
+		<li data-src="B2 – Pair of düduk duct flutes.flac">6. Pair of düduk (duct flutes) - Unknown performer</li>
+
+		<li data-src="Bm30l2002_Cambodia_A04 Counting The Flowers (Rop Koh).mp3">7. Counting The Flowers (Rop Koh) - String Orchestra of Siem Reap</li>
+
+		<li data-src="Sabri Brothers - The Music of the Qawal - 03 - Hamd.mp3">8. Hamd - Sabri Brothers</li>
+
+		<li data-src="01.03. Concert De Sifflets - Whistle Music.mp3">9. Concert De Sifflets / Whistle Music - Unknown performer</li>
+
+    
+</ul>
+</div>
+
+<script>
+const player = document.getElementById('player');
+const tracks = document.querySelectorAll('#playlist li');
+const nowPlaying = document.getElementById('now-playing');
+const nextBtn = document.getElementById('next');
+const prevBtn = document.getElementById('prev');
+let current = 0;
+	
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return m + ':' + (s < 10 ? '0' + s : s);
+}
+
+function playTrack(index) {
+  tracks.forEach(li => li.classList.remove('playing'));
+  const track = tracks[index];
+  player.src = track.getAttribute('data-src');
+  track.classList.add('playing');
+  player.play();
+  nowPlaying.textContent = "Now playing: " + track.textContent;
+}
+
+tracks.forEach((li, index) => {
+  li.addEventListener('click', () => {
+    current = index;
+    playTrack(current);
+  });
+});
+
+player.addEventListener('ended', () => {
+  current = (current + 1) % tracks.length;
+  playTrack(current);
+});
+
+player.addEventListener('error', () => {
+  console.warn("Error loading track — skipping to next.");
+  current = (current + 1) % tracks.length;
+  playTrack(current);
+});
+
+// ⏩ Skip forward/back buttons
+nextBtn.addEventListener('click', () => {
+  current = (current + 1) % tracks.length;
+  playTrack(current);
+});
+
+prevBtn.addEventListener('click', () => {
+  current = (current - 1 + tracks.length) % tracks.length;
+  playTrack(current);
+});
+
+// 🎵 Update progress in label
+player.addEventListener('timeupdate', () => {
+  if (!isNaN(player.duration)) {
+    /* const currentTime = formatTime(player.currentTime); */
+    /* const duration = formatTime(player.duration); */
+    const trackName = tracks[current].textContent;
+    nowPlaying.textContent = ` Now playing:    ${trackName} `;
+  }
+});
+
+// Start playing first track
+playTrack(current);
+</script>
+
+	<h4 style="color: #ffffff; font-weight: 450;">track information</h3>
+
+<div style="text-align: left; font-size: 0.9em">
+	
+	
+	<ol>
+		<li> This was the hardest to track down because the LP is quite rare and was never reissued. Anderson's reference is "Quodlibet for solo dambura," Track A6 on the 1971 release <a href="https://www.discogs.com/release/13989175-Various-An-Anthology-Of-The-Worlds-Music-Afghanistan-III">An Anthology Of The World's Music: Afghanistan III</a> from Anthology Records. 
+		The performer is credited as Bābā Qerān, though as Anderson observes this simply means "old man" in Kurdish. 
+		This album was assembled from field recordings made by Mark Slobin in 1968; there's copious interesting background on the project at <a href="https://afghanistan.markslobin.com/afghanistan/index.html">his website</a>. (For instance, the Anthology record label only lasted about two years before it was forced to close down abruptly after its manager's warehouse was struck by lightning. Which explains the lack of reissues.) 
+		The track linked above is actually Track 1-9, "Dambura Medley," from a later compilation, <a href="https://www.discogs.com/release/6156158-Various-Afghanistan-Untouched">Afghanistan Untouched</a>, released (rather ironically given the title) in 2003 on the Traditional Crossroads label. 
+		This album was also assembled from Slobin's 1968 recordings, and again the track is credited to Bābā Qerān. Since the titles are also synonymous, and (estimating from available metadata) the track lengths are about the same, seems a safe bet this is the same recording as on the older LP.
+		</li>
+
+		<li>
+			Track 4 on <a href="https://www.discogs.com/release/3327632-Jean-Jenkins-Poul-Rovsing-Olsen-Music-In-The-World-Of-Islam-Strings-Flutes-Trumpets">this</a>.
+		</li>
+
+		<li>
+			Track 14 on <a href="https://www.discogs.com/master/2543272-Various-%D0%97%D0%B2%D1%83%D1%87%D0%B0%D1%82-%D0%9C%D1%83%D0%B7%D1%8B%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%98%D0%BD%D1%81%D1%82%D1%80%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D0%9D%D0%B0%D1%80%D0%BE%D0%B4%D0%BE%D0%B2-%D0%A1%D0%A1%D0%A1%D0%A0">this</a>.
+		</li>
+
+		<li>
+			Track A4 on <a href="https://www.discogs.com/release/2753424-Deben-Bhattacharya-The-Syrian-Maqams">this</a>.
+		</li>
+
+		<li>
+			Track A3 on <a href="https://www.discogs.com/release/1976820-Various-North-Yemen">this</a>.
+		</li>
+
+		<li>
+			Track B2 on <a href="https://www.discogs.com/release/2256333-Various-Music-In-The-World-Of-Islam-4-Flutes-Trumpets">this</a>.
+		</li>
+
+		<li>
+			Track A4 on <a href="https://www.discogs.com/release/21985135-Alain-Dani%C3%A9lou-Cambodia">this</a>.
+		</li>
+
+		<li>
+			Track B1 on <a href="https://www.discogs.com/release/1976847-The-Sabri-Brothers-Pakistan-The-Music-Of-The-Qawal-Wandering-Minstrels">this</a>.
+		</li>
+
+		<li>
+			Track A3 on <a href="https://www.discogs.com/release/1806833-Unknown-Artist-Chants-Et-Danses-Des-Montagnards-Du-Viet-Nam">this</a>.
+		</li>
+
+	</ol>
+
+	</div>
+	
+
+
+	
+
+
+  
+</body>
+</html>
+
